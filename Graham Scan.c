@@ -51,6 +51,12 @@ void main (void)
 
     }
 
+    for(i=0;i<MAXPOINT;i++)
+        if(Punto0.y == Puntos[i].y)
+            if(Punto0.x>=Puntos[i].x)
+                Punto0 = Puntos[i];
+
+
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para continuar");
