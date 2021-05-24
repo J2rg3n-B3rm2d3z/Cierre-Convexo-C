@@ -10,6 +10,7 @@
 #define MAXPOINT 10 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
+#define PI 3.14159265
 
 typedef struct
 {
@@ -21,10 +22,12 @@ void inicializar(void);             /*Funcion para inicializar el modo grafico*/
 bool CCW(Point a, Point b, Point c);/*Funcion para saber si un punto va con las manesillas del reloj o encontra*/
                                     /*Tambien puede indicar si un punto esta a la derecha de una linea, colineal o la izquierda de esta*/
 
+double ObteMeddelAngulo(Point a, Point b);
+
 void main (void)
 {
-    Point Puntos[MAXPOINT],PuntoEnvol[MAXPOINT],Punto0; /*Declaracion de variables del tipo punto*/
-    int i = 0, j = 0; /*Variables de interaccion*/
+    Point Puntos[MAXPOINT],PuntoEnvol[MAXPOINT],Punto0,PuntoAux; /*Declaracion de variables del tipo punto*/
+    int i = 0, j = 0, pasada =0; /*Variables de interaccion*/
 
     inicializar();
 
@@ -48,7 +51,6 @@ void main (void)
             Punto0 = Puntos[i];
         else if(Punto0.y>Puntos[i].y)
             Punto0 = Puntos[i];
-
     }
 
     for(i=0;i<MAXPOINT;i++)
@@ -56,7 +58,15 @@ void main (void)
             if(Punto0.x>=Puntos[i].x)
                 Punto0 = Puntos[i];
 
-
+	for(int pasada=1;pasada<MAXPOINT;pasada++)
+		for(int i =0; i<MAXPOINT-1;i++)
+			if(ObteMeddelAngulo(Punto0,Puntos[i])>=ObteMeddelAngulo(Punto0,Puntos[i+1]))
+			{
+				aux = Puntos[i];
+				Puntos[i] = Puntos[i+1];
+				Puntos[i+1] = aux;
+			}
+    
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para continuar");
@@ -100,6 +110,21 @@ bool CCW(Point a, Point b, Point c) /*Funcion para obtener la ubicacion de un pu
         return true;
    
     return false;   /*Si esta ubicado a la izquierda*/
+}
+
+double ObteMeddelAngulo(Point a, Point b)
+{
+    double Angulo;
+
+    if(a.x != b.x ||  a.y != b.y)
+        Angulo = atan((double)(a.y-b.y)/(double)(b.x-a.y));
+    else
+        Angulo = 0;
+
+    if(Angulo>=0)
+        return Angulo;
+    else
+        return Angulo+PI;
 }
 
 void inicializar(void)
