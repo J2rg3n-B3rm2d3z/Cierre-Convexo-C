@@ -7,10 +7,9 @@
 #include <math.h>
 #include <stdbool.h>
 
-#define MAXPOINT 10 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 20 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
-#define PI 3.14159265
 
 typedef struct
 {
@@ -22,12 +21,10 @@ void inicializar(void);             /*Funcion para inicializar el modo grafico*/
 bool CCW(Point a, Point b, Point c);/*Funcion para saber si un punto va con las manesillas del reloj o encontra*/
                                     /*Tambien puede indicar si un punto esta a la derecha de una linea, colineal o la izquierda de esta*/
 
-double ObteMeddelAngulo(Point a, Point b);
-
 void main (void)
 {
-    Point Puntos[MAXPOINT],PuntoEnvol[MAXPOINT],Punto0,PuntoAux; /*Declaracion de variables del tipo punto*/
-    int i = 0, j = 0, pasada =0, Cant; /*Variables de interaccion*/
+    Point Puntos[MAXPOINT],PuntoEnSup[MAXPOINT],PuntoEnInf[MAXPOINT],Punto0,PuntoAux; /*Declaracion de variables del tipo punto*/
+    int i = 0, j = 0, pasada =0, Cant=0; /*Variables de interaccion*/
     char Men[50];
 
     inicializar();
@@ -47,26 +44,53 @@ void main (void)
     for(i=0;i<MAXPOINT;i++)
     {
         putpixel(Puntos[i].x,Puntos[i].y,WHITE);
-
-        if(i==0)
-            Punto0 = Puntos[i];
-        else if(Punto0.y<=Puntos[i].y)
-            Punto0 = Puntos[i];
     }
 
-    for(i=0;i<MAXPOINT;i++)
-        if(Punto0.y == Puntos[i].y)
-            if(Punto0.x<=Puntos[i].x)
-                Punto0 = Puntos[i];
 
 	for( pasada=1;pasada<MAXPOINT;pasada++)
 		for( i =0; i<MAXPOINT-1;i++)
-			if(ObteMeddelAngulo(Punto0,Puntos[i])<=ObteMeddelAngulo(Punto0,Puntos[i+1]))
+			if(Puntos[i].x>=Puntos[i+1].x)
 			{
 				PuntoAux = Puntos[i];
 				Puntos[i] = Puntos[i+1];
 				Puntos[i+1] = PuntoAux;
 			}
+
+    for(i=0;i<MAXPOINT;i++)
+    {
+        putpixel(Puntos[i].x,Puntos[i].y,YELLOW);
+        sprintf(Men,"%d",i);
+        outtextxy(Puntos[i].x,Puntos[i].y,Men);
+        delay(500);
+    }
+
+    PuntoEnSup[0] = Puntos[0];
+    PuntoEnSup[1] = Puntos[1];
+    Cant = 2;
+
+    for(i = 2; i<MAXPOINT; i++)
+    {
+        PuntoEnSup[Cant]=Puntos[i];
+        Cant++;
+
+        while( (Cant > 2) && !CCW(PuntoEnSup[Cant-1],PuntoEnSup[Cant-2],PuntoEnSup[Cant-3]))
+        {
+            /*setcolor(BLACK);
+            line(PuntoEnSup[Cant-3].x,PuntoEnSup[Cant-3].y,PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y);*/
+            PuntoEnSup[Cant-2] = PuntoEnSup[Cant-1];
+            Cant--;
+            delay(500);
+        }
+
+        setcolor(WHITE);
+        if(Cant > 2)
+            line(PuntoEnSup[Cant-3].x,PuntoEnSup[Cant-3].y,PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y);
+        
+        delay(500);
+    }
+
+    
+
 
     
 
@@ -98,24 +122,9 @@ bool CCW(Point a, Point b, Point c) /*Funcion para obtener la ubicacion de un pu
 
     if( q >= w ) /*Si el punto esta ubicado a la derecha o es colineal*/
 
-        return true;
+        return false;
    
-    return false;   /*Si esta ubicado a la izquierda*/
-}
-
-double ObteMeddelAngulo(Point a, Point b)
-{
-    double Angulo;
-
-    if(a.x != b.x ||  a.y != b.y)
-        Angulo = atan((long)(a.y-b.y)/(long)(b.x-a.y));
-    else
-        Angulo = 0;
-
-    if(Angulo>=0)
-        return Angulo;
-    else
-        return Angulo+PI;
+    return true;   /*Si esta ubicado a la izquierda*/
 }
 
 void inicializar(void)
