@@ -76,41 +76,8 @@ void main (void)
         delay(500);
     }
 
-    PuntoEnvol[0] = Puntos[0];
-    PuntoEnvol[1] = Puntos[1];
+    
 
-    setcolor(WHITE);
-    outtextxy(50,20,"Pulse cualquier boton para continuar");
-    getch();
-    setcolor(BLACK);
-    outtextxy(50,20,"Pulse cualquier boton para continuar");
-
-    i=2;
-
-    Cant=1;
-
-    while(i<MAXPOINT)
-    {
-        if(!CCW(PuntoEnvol[Cant-1],PuntoEnvol[Cant],Puntos[i]))
-        {
-            PuntoEnvol[i]=Puntos[i];
-            i++;
-            setcolor(WHITE);
-            line(PuntoEnvol[Cant-1].x,PuntoEnvol[Cant-1].y,PuntoEnvol[Cant].x,PuntoEnvol[Cant].y); 
-            Cant++;
-            
-        }
-        else
-        {
-            setcolor(BLACK);
-            line(PuntoEnvol[Cant-1].x,PuntoEnvol[Cant-1].y,PuntoEnvol[Cant].x,PuntoEnvol[Cant].y);
-            putpixel(PuntoEnvol[Cant].x,PuntoEnvol[Cant].y,WHITE);
-            Cant--;
-        }
-
-        delay(100);
-
-    }
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para Salir");
