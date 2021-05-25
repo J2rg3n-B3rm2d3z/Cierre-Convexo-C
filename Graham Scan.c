@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 /*Librerias a utilizar*/
 #include <conio.h>
 #include <graphics.h>
@@ -195,6 +193,3 @@ void inicializar(void)
 	int drive=DETECT,modo;
 	initgraph(&drive,&modo,"c:\\tc20\\bin");
 }
-
-
->>>>>>> PythonGithub
