@@ -7,7 +7,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-#define MAXPOINT 20 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
 
@@ -29,7 +29,7 @@ void main (void)
 
     inicializar();
 
-    /*srand((unsigned int)time(NULL)); Funcion para cambiar la funcion random en cada ejecucion de codigo*/
+    srand((unsigned int)time(NULL));/* Funcion para cambiar la funcion random en cada ejecucion de codigo*/
 
     for(i=0;i<MAXPOINT;i++) /*Establecimiento de puntos*/
     {
@@ -75,11 +75,11 @@ void main (void)
 
         while( (Cant > 2) && !CCW(PuntoEnSup[Cant-1],PuntoEnSup[Cant-2],PuntoEnSup[Cant-3]))
         {
-            /*setcolor(BLACK);
-            line(PuntoEnSup[Cant-3].x,PuntoEnSup[Cant-3].y,PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y);*/
+            setcolor(BLACK);
+            line(PuntoEnSup[Cant-3].x,PuntoEnSup[Cant-3].y,PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y);
             PuntoEnSup[Cant-2] = PuntoEnSup[Cant-1];
             Cant--;
-            delay(500);
+            delay(100);
         }
 
         setcolor(WHITE);
@@ -89,11 +89,34 @@ void main (void)
         delay(500);
     }
 
-    
+    line(PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y,PuntoEnSup[Cant-1].x,PuntoEnSup[Cant-1].y);
 
+    PuntoEnInf[0] = Puntos[MAXPOINT-1];
+    PuntoEnInf[1] = Puntos[MAXPOINT-2];
+    Cant = 2;
 
-    
+    for(i = MAXPOINT-3; i>-1; i--)
+    {
+        PuntoEnInf[Cant]=Puntos[i];
+        Cant++;
 
+        while( (Cant > 2) && !CCW(PuntoEnInf[Cant-1],PuntoEnInf[Cant-2],PuntoEnInf[Cant-3]))
+        {
+            setcolor(BLACK);
+            line(PuntoEnInf[Cant-3].x,PuntoEnInf[Cant-3].y,PuntoEnInf[Cant-2].x,PuntoEnInf[Cant-2].y);
+            PuntoEnInf[Cant-2] = PuntoEnInf[Cant-1];
+            Cant--;
+            delay(100);
+        }
+
+        setcolor(WHITE);
+        if(Cant > 2)
+            line(PuntoEnInf[Cant-3].x,PuntoEnInf[Cant-3].y,PuntoEnInf[Cant-2].x,PuntoEnInf[Cant-2].y);
+        
+        delay(500);
+    }
+
+    line(PuntoEnInf[Cant-2].x,PuntoEnInf[Cant-2].y,PuntoEnInf[Cant-1].x,PuntoEnInf[Cant-1].y);    
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para Salir");
