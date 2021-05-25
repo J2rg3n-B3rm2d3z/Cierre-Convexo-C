@@ -67,14 +67,6 @@ void main (void)
 				Puntos[i] = Puntos[i+1];
 				Puntos[i+1] = PuntoAux;
 			}
-    
-    for(i=0;i<MAXPOINT;i++)
-    {
-        putpixel(Puntos[i].x,Puntos[i].y,YELLOW);
-        sprintf(Men,"%d",i);
-        outtextxy(Puntos[i].x,Puntos[i].y,Men);
-        delay(500);
-    }
 
     
 
