@@ -9,7 +9,7 @@
 
 /*Cabe destacar que este codigo se puede optimizar aun mas*/
 
-#define MAXPOINT 50 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo (Cabe destacar que en este caso a mayor puntos tardara mas el algoritmo)*/
                      /*A excepcion que se dieran numeros menores de 3*/
 
@@ -22,6 +22,8 @@ typedef struct
 void inicializar(void);             /*Funcion para inicializar el modo grafico*/
 bool CCW(Point a, Point b, Point c);/*Funcion para saber si un punto va con las manesillas del reloj o encontra*/
                                     /*Tambien puede indicar si un punto esta a la derecha de una linea, colineal o la izquierda de esta*/
+
+void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo);
 
 void main (void)
 {
@@ -51,6 +53,7 @@ void main (void)
     /*Bucle para organizar los puntos de forma ascendente de izquierda a derecha usando el metodo de burbuja*/
     /*Cabe destacar que hay algoritmos mas eficientes que este*/
 
+    /*
 	for( pasada=1;pasada<MAXPOINT;pasada++)
 		for( i =0; i<MAXPOINT-1;i++)
 			if(Puntos[i].x>=Puntos[i+1].x)
@@ -58,19 +61,23 @@ void main (void)
 				PuntoAux = Puntos[i];
 				Puntos[i] = Puntos[i+1];
 				Puntos[i+1] = PuntoAux;
-			}
+			}*/
+    
+    /*Este es el algoritmo mas eficiente de ordenacion*/
+    quicksort(Puntos,0,MAXPOINT-1);
+
     /*
+    Este bucle es solamente para enumerar los puntos de izquierda a derecha*/
 
-    Este bucle es solamente para enumerar los puntos de izquierda a derecha
-
+    /*
     for(i=0;i<MAXPOINT;i++)
     {
         sprintf(Men,"%d",i); /*Se guarda el mensaje en la cadena, que sera el valor de i
-        outtextxy(Puntos[i].x,Puntos[i].y,Men); /* Se muestra en pantalla en las coordenadas de los puntos la enumeracion de cada punto
-        delay(10);
+        outtextxy(Puntos[i].x,Puntos[i].y,Men); /*Se muestra en pantalla en las coordenadas de los puntos la enumeracion de cada punto
+        delay(100);
     }
-    
     */
+    
 
    /*Este es una de las variaciones del algoritmo de Graham Scan, en esta se trabaja por partes, 
     Como se vio antes, los puntos se ordenaron de izquierda a derecha, y no conforme el angulo con respecto al punto
@@ -186,6 +193,39 @@ bool CCW(Point a, Point b, Point c) /*Funcion para obtener la ubicacion de un pu
         return false;
    
     return true;   /*Si esta ubicado a la izquierda*/
+}
+
+void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo)
+{
+    int i, j, pivot;
+    Point temp;
+
+   if(Primero<Ultimo)
+   {
+      pivot=Primero;
+      i=Primero;
+      j=Ultimo;
+
+      while(i<j)
+      {
+         while(Puntos[i].x <= Puntos[pivot].x && i<Ultimo)
+            i++;
+         while(Puntos[j].x > Puntos[pivot].x)
+            j--;
+         if(i<j)
+         {
+            temp=Puntos[i];
+            Puntos[i]=Puntos[j];
+            Puntos[j]=temp;
+         }
+      }
+
+      temp=Puntos[pivot];
+      Puntos[pivot]=Puntos[j];
+      Puntos[j]=temp;
+      quicksort(Puntos,Primero,j-1);
+      quicksort(Puntos,j+1,Ultimo);
+   }
 }
 
 void inicializar(void)
