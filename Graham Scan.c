@@ -27,11 +27,12 @@ double ObteMeddelAngulo(Point a, Point b);
 void main (void)
 {
     Point Puntos[MAXPOINT],PuntoEnvol[MAXPOINT],Punto0,PuntoAux; /*Declaracion de variables del tipo punto*/
-    int i = 0, j = 0, pasada =0; /*Variables de interaccion*/
+    int i = 0, j = 0, pasada =0, Cant; /*Variables de interaccion*/
+    char Men[50];
 
     inicializar();
 
-    srand((unsigned int)time(NULL)); /*Funcion para cambiar la funcion random en cada ejecucion de codigo*/
+    /*srand((unsigned int)time(NULL)); Funcion para cambiar la funcion random en cada ejecucion de codigo*/
 
     for(i=0;i<MAXPOINT;i++) /*Establecimiento de puntos*/
     {
@@ -49,24 +50,34 @@ void main (void)
 
         if(i==0)
             Punto0 = Puntos[i];
-        else if(Punto0.y>Puntos[i].y)
+        else if(Punto0.y<=Puntos[i].y)
             Punto0 = Puntos[i];
     }
 
     for(i=0;i<MAXPOINT;i++)
         if(Punto0.y == Puntos[i].y)
-            if(Punto0.x>=Puntos[i].x)
+            if(Punto0.x<=Puntos[i].x)
                 Punto0 = Puntos[i];
 
-	for(int pasada=1;pasada<MAXPOINT;pasada++)
-		for(int i =0; i<MAXPOINT-1;i++)
-			if(ObteMeddelAngulo(Punto0,Puntos[i])>=ObteMeddelAngulo(Punto0,Puntos[i+1]))
+	for( pasada=1;pasada<MAXPOINT;pasada++)
+		for( i =0; i<MAXPOINT-1;i++)
+			if(ObteMeddelAngulo(Punto0,Puntos[i])<=ObteMeddelAngulo(Punto0,Puntos[i+1]))
 			{
-				aux = Puntos[i];
+				PuntoAux = Puntos[i];
 				Puntos[i] = Puntos[i+1];
-				Puntos[i+1] = aux;
+				Puntos[i+1] = PuntoAux;
 			}
     
+    for(i=0;i<MAXPOINT;i++)
+    {
+        putpixel(Puntos[i].x,Puntos[i].y,YELLOW);
+        sprintf(Men,"%d",i);
+        outtextxy(Puntos[i].x,Puntos[i].y,Men);
+        delay(500);
+    }
+
+    PuntoEnvol[0] = Puntos[0];
+    PuntoEnvol[1] = Puntos[1];
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para continuar");
@@ -74,11 +85,32 @@ void main (void)
     setcolor(BLACK);
     outtextxy(50,20,"Pulse cualquier boton para continuar");
 
-    /*Bucle para iniciar el cierre convexo*/
+    i=2;
 
-    
+    Cant=1;
 
+    while(i<MAXPOINT)
+    {
+        if(!CCW(PuntoEnvol[Cant-1],PuntoEnvol[Cant],Puntos[i]))
+        {
+            PuntoEnvol[i]=Puntos[i];
+            i++;
+            setcolor(WHITE);
+            line(PuntoEnvol[Cant-1].x,PuntoEnvol[Cant-1].y,PuntoEnvol[Cant].x,PuntoEnvol[Cant].y); 
+            Cant++;
+            
+        }
+        else
+        {
+            setcolor(BLACK);
+            line(PuntoEnvol[Cant-1].x,PuntoEnvol[Cant-1].y,PuntoEnvol[Cant].x,PuntoEnvol[Cant].y);
+            putpixel(PuntoEnvol[Cant].x,PuntoEnvol[Cant].y,WHITE);
+            Cant--;
+        }
 
+        delay(100);
+
+    }
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para Salir");
@@ -117,7 +149,7 @@ double ObteMeddelAngulo(Point a, Point b)
     double Angulo;
 
     if(a.x != b.x ||  a.y != b.y)
-        Angulo = atan((double)(a.y-b.y)/(double)(b.x-a.y));
+        Angulo = atan((long)(a.y-b.y)/(long)(b.x-a.y));
     else
         Angulo = 0;
 
