@@ -9,7 +9,7 @@
 
 /*Cabe destacar que este codigo se puede optimizar aun mas*/
 
-#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 50 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo (Cabe destacar que en este caso a mayor puntos tardara mas el algoritmo)*/
                      /*A excepcion que se dieran numeros menores de 3*/
 

@@ -9,8 +9,8 @@
 
 /*Cabe destacar que este codigo se puede optimizar aun mas*/
 
-#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
-                     /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo (Cabe destacar que en este caso a mayor puntos tardara mas el algoritmo)*/
+#define MAXPOINT 50 /*Numeros de puntos que se mostraran en pantalla*/
+                     /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
 
 typedef struct
@@ -23,11 +23,12 @@ void inicializar(void);             /*Funcion para inicializar el modo grafico*/
 bool CCW(Point a, Point b, Point c);/*Funcion para saber si un punto va con las manesillas del reloj o encontra*/
                                     /*Tambien puede indicar si un punto esta a la derecha de una linea, colineal o la izquierda de esta*/
 
-void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo);
+void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant);
+long Area(Point a,Point b,Point c);
 
 void main (void)
 {
-    Point Puntos[MAXPOINT],PuntoEn[MAXPOINT],PuntoSu[MAXPOINT],PuntoIn[MAXPOINT],PuntoIz,PuntoDer; /*Declaracion de variables del tipo punto*/
+    Point Puntos[MAXPOINT],PuntoSu[MAXPOINT],PuntoIn[MAXPOINT],PuntoIz,PuntoDer; /*Declaracion de variables del tipo punto*/
     int i = 0, j = 0, TotalPunSup=0,TotalPunInf=0, Cant=0; /*Variables de interaccion*/
     char Men[50]; /*Posible mensaje que se guardara en esta variable*/
 
@@ -63,11 +64,8 @@ void main (void)
         }
     }
 
-    setcolor(WHITE);
+    setcolor(BLUE);
     line(PuntoIz.x,PuntoIz.y,PuntoDer.x,PuntoDer.y);
-
-    PuntoEn[0] = PuntoIz;
-    PuntoEn[1] = PuntoDer;
 
     for(i = 0; i<MAXPOINT; i++)
     {
@@ -75,30 +73,16 @@ void main (void)
         {
             PuntoSu[TotalPunSup]=Puntos[i];
             TotalPunSup++;
-            putpixel(Puntos[i].x,Puntos[i].y,YELLOW);
         }
         else if(CCW(PuntoDer,PuntoIz,Puntos[i]))
         {
             PuntoIn[TotalPunInf]=Puntos[i];
             TotalPunInf++;
-            putpixel(Puntos[i].x,Puntos[i].y,BLUE);
         }
     }
 
-    
-
-
-
-    
-    
-    /*Este es el algoritmo mas eficiente de ordenacion
-    quicksort(Puntos,0,MAXPOINT-1);*/
-
-
-
-    
-
-
+    FindHull(PuntoSu,PuntoIz,PuntoDer,TotalPunSup);
+    FindHull(PuntoIn,PuntoDer,PuntoIz,TotalPunInf);
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para Salir");
@@ -131,39 +115,58 @@ bool CCW(Point a, Point b, Point c) /*Funcion para obtener la ubicacion de un pu
    
     return true;   /*Si esta ubicado a la izquierda*/
 }
-/*
-void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo)
+
+long Area(Point a,Point b,Point c)
 {
-    int i, j, pivot;
-    Point temp;
+   long area;
+   area = (long)(b.x-a.x)*(long)(c.y-a.y);
+   area-= (long)(b.y-a.y)*(long)(c.x-a.x);
+   return(area);
+}
 
-   if(Primero<Ultimo)
-   {
-      pivot=Primero;
-      i=Primero;
-      j=Ultimo;
+void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant)
+{
+    Point PuntoIz[MAXPOINT],PuntoDer[MAXPOINT];
+ 
+    int i=0,TotalPiz=0,TotalPde=0;
+    Point c;
 
-      while(i<j)
-      {
-         while(Puntos[i].x <= Puntos[pivot].x && i<Ultimo)
-            i++;
-         while(Puntos[j].x > Puntos[pivot].x)
-            j--;
-         if(i<j)
-         {
-            temp=Puntos[i];
-            Puntos[i]=Puntos[j];
-            Puntos[j]=temp;
-         }
-      }
+    if(Cant<1)
+     return;
+    
+    for(i = 0; i < Cant; i++)
+    {
+        if(i==0)
+            c = Puntos[i];
+        else if ((long) Area(a,Puntos[i],b)>(long) Area(a,c,b))
+            c = Puntos[i];
 
-      temp=Puntos[pivot];
-      Puntos[pivot]=Puntos[j];
-      Puntos[j]=temp;
-      quicksort(Puntos,Primero,j-1);
-      quicksort(Puntos,j+1,Ultimo);
-   }
-}*/
+    }
+
+    setcolor(BLUE);
+    line(a.x,a.y,c.x,c.y);
+    delay(100);
+    line(b.x,b.y,c.x,c.y);
+    delay(100);
+
+    for(i = 0; i<Cant; i++)
+    {
+        if(CCW(a,c,Puntos[i]))
+        {
+            PuntoIz[TotalPiz]=Puntos[i];
+            TotalPiz++;
+        }
+        else if(CCW(c,b,Puntos[i]))
+        {
+            PuntoDer[TotalPde]=Puntos[i];
+            TotalPde++;
+        }
+    }
+
+    FindHull(PuntoIz,a,c,TotalPiz);
+    FindHull(PuntoDer,c,b,TotalPde);
+
+}
 
 void inicializar(void)
 {
