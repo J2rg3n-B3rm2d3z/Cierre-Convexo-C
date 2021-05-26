@@ -9,7 +9,7 @@
 
 /*Cabe destacar que este codigo se puede optimizar aun mas*/
 
-#define MAXPOINT 50 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
 
@@ -19,18 +19,25 @@ typedef struct
     int y;
 }Point;              /*Una estructura de tipo punto para un mayor entendimiento del codigo*/
 
+Point PuntosEnvSup[MAXPOINT];
+Point PuntosEnvInf[MAXPOINT];
+int CantPuntosEn=0;
+int CantPuntosEnSu=0;
+int CantPuntosEnIn=0;
+
 void inicializar(void);             /*Funcion para inicializar el modo grafico*/
 bool CCW(Point a, Point b, Point c);/*Funcion para saber si un punto va con las manesillas del reloj o encontra*/
                                     /*Tambien puede indicar si un punto esta a la derecha de una linea, colineal o la izquierda de esta*/
 
-void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant);
+void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant, bool Arriba);
 long Area(Point a,Point b,Point c);
+void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo);
 
 void main (void)
 {
     Point Puntos[MAXPOINT],PuntoSu[MAXPOINT],PuntoIn[MAXPOINT],PuntoIz,PuntoDer; /*Declaracion de variables del tipo punto*/
-    int i = 0, j = 0, TotalPunSup=0,TotalPunInf=0, Cant=0; /*Variables de interaccion*/
-    char Men[50]; /*Posible mensaje que se guardara en esta variable*/
+    int i = 0, j = 0, TotalPunSup=0,TotalPunInf=0; /*Variables de interaccion*/
+    char men[50]; /*Posible mensaje que se guardara en esta variable*/
 
     inicializar();
 
@@ -66,6 +73,7 @@ void main (void)
 
     setcolor(BLUE);
     line(PuntoIz.x,PuntoIz.y,PuntoDer.x,PuntoDer.y);
+    delay(50);
 
     for(i = 0; i<MAXPOINT; i++)
     {
@@ -81,8 +89,40 @@ void main (void)
         }
     }
 
-    FindHull(PuntoSu,PuntoIz,PuntoDer,TotalPunSup);
-    FindHull(PuntoIn,PuntoDer,PuntoIz,TotalPunInf);
+    PuntosEnvSup[0]=PuntoIz;
+    PuntosEnvSup[1]=PuntoDer;
+    PuntosEnvInf[0]=PuntoIz;
+    PuntosEnvInf[1]=PuntoDer;
+
+    CantPuntosEn=2;
+
+    FindHull(PuntoSu,PuntoIz,PuntoDer,TotalPunSup,true);
+    
+    quicksort(PuntosEnvSup,0,CantPuntosEn-1);
+    
+    setcolor(WHITE);
+    for(i=0;i<CantPuntosEn-1;i++)
+    {
+        line(PuntosEnvSup[i].x,PuntosEnvSup[i].y,PuntosEnvSup[i+1].x,PuntosEnvSup[i+1].y);
+        delay(100);
+    }
+
+    CantPuntosEnSu=CantPuntosEn;
+
+    CantPuntosEn=2;
+
+    FindHull(PuntoIn,PuntoDer,PuntoIz,TotalPunInf,false);
+
+    quicksort(PuntosEnvInf,0,CantPuntosEn-1);
+    
+    setcolor(WHITE);
+    for(i=0;i<CantPuntosEn-1;i++)
+    {
+        line(PuntosEnvInf[i].x,PuntosEnvInf[i].y,PuntosEnvInf[i+1].x,PuntosEnvInf[i+1].y);
+        delay(100);
+    }
+
+    CantPuntosEnIn=CantPuntosEn;
 
     setcolor(WHITE);
     outtextxy(50,20,"Pulse cualquier boton para Salir");
@@ -124,7 +164,7 @@ long Area(Point a,Point b,Point c)
    return(area);
 }
 
-void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant)
+void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant, bool Arriba)
 {
     Point PuntoIz[MAXPOINT],PuntoDer[MAXPOINT];
  
@@ -142,12 +182,19 @@ void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant)
             c = Puntos[i];
 
     }
-
+    
     setcolor(BLUE);
     line(a.x,a.y,c.x,c.y);
     delay(100);
     line(b.x,b.y,c.x,c.y);
     delay(100);
+
+    if(Arriba) 
+        PuntosEnvSup[CantPuntosEn] = c;
+    else
+        PuntosEnvInf[CantPuntosEn] = c;
+        
+    CantPuntosEn++;
 
     for(i = 0; i<Cant; i++)
     {
@@ -163,9 +210,42 @@ void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant)
         }
     }
 
-    FindHull(PuntoIz,a,c,TotalPiz);
-    FindHull(PuntoDer,c,b,TotalPde);
+    FindHull(PuntoIz,a,c,TotalPiz,Arriba);
+    FindHull(PuntoDer,c,b,TotalPde,Arriba);
 
+}
+
+void quicksort(Point Puntos[MAXPOINT],int Primero,int Ultimo)
+{
+    int i, j, pivot;
+    Point temp;
+
+   if(Primero<Ultimo)
+   {
+      pivot=Primero;
+      i=Primero;
+      j=Ultimo;
+
+      while(i<j)
+      {
+         while(Puntos[i].x <= Puntos[pivot].x && i<Ultimo)
+            i++;
+         while(Puntos[j].x > Puntos[pivot].x)
+            j--;
+         if(i<j)
+         {
+            temp=Puntos[i];
+            Puntos[i]=Puntos[j];
+            Puntos[j]=temp;
+         }
+      }
+
+      temp=Puntos[pivot];
+      Puntos[pivot]=Puntos[j];
+      Puntos[j]=temp;
+      quicksort(Puntos,Primero,j-1);
+      quicksort(Puntos,j+1,Ultimo);
+   }
 }
 
 void inicializar(void)
