@@ -9,7 +9,7 @@
 
 /*Cabe destacar que este codigo se puede optimizar aun mas*/
 
-#define MAXPOINT 500 /*Numeros de puntos que se mostraran en pantalla*/
+#define MAXPOINT 100 /*Numeros de puntos que se mostraran en pantalla*/
                      /*Se puede cambiar la cantidad y aun asi funcionaria el algoritmo*/
                      /*A excepcion que se dieran numeros menores de 3*/
 
@@ -208,12 +208,12 @@ void FindHull (Point Puntos[MAXPOINT],Point a,Point b, int Cant, bool Arriba)
     codigo
     */
 
-   /*
+   
     setcolor(BLUE);
     line(a.x,a.y,c.x,c.y);
     delay(100);
     line(b.x,b.y,c.x,c.y);
-    delay(100);*/
+    delay(100);
 
     /*Esta parte del codigo es unicamente para agregar el punto convexo encontrado, al arreglo convexo superior o inferior*/
     if(Arriba) 

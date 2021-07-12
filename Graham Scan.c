@@ -102,7 +102,7 @@ void main (void)
             /*Esto es unicamente para que se pinto de negro las lineas blancas que ya no son validas
             Nota: puede llegar cierto punto que llegue a borrar parte de la figura
             */
-            setcolor(BLACK); /*Cambialo a azul para ver magia*/
+            setcolor(BLUE); /*Cambialo a azul para ver magia*/
             line(PuntoEnSup[Cant-3].x,PuntoEnSup[Cant-3].y,PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y);
             putpixel(PuntoEnSup[Cant-2].x,PuntoEnSup[Cant-2].y,WHITE);
             
@@ -146,7 +146,7 @@ void main (void)
 
         while( (Cant > 2) && !CCW(PuntoEnInf[Cant-1],PuntoEnInf[Cant-2],PuntoEnInf[Cant-3]))
         {
-            setcolor(BLACK);/*Cambialo a azul para ver magia*/
+            setcolor(BLUE);/*Cambialo a azul para ver magia*/
             line(PuntoEnInf[Cant-3].x,PuntoEnInf[Cant-3].y,PuntoEnInf[Cant-2].x,PuntoEnInf[Cant-2].y);
             putpixel(PuntoEnInf[Cant-2].x,PuntoEnInf[Cant-2].y,WHITE);
             PuntoEnInf[Cant-2] = PuntoEnInf[Cant-1];
